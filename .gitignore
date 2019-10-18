@@ -1,0 +1,8 @@
+*.pyc
+accounts.db
+db/
+en/
+ios/
+accounts_0_01
+*.txt
+*.chls
