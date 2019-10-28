@@ -24,9 +24,9 @@ class API(object):
 		self.s=requests.Session()
 		self.s.headers.update({'Accept-Encoding':'gzip, deflate','Content-Type':'application/json','Expect':'100-continue','User-Agent':None})
 		self.s.verify=False
-		#if 'win' in sys.platform:
-		#	self.s.proxies.update({'http': 'http://127.0.0.1:8888','https': 'https://127.0.0.1:8888',})
-		self.game_api='https://gl-game.tsubasa-dreamteam.com/ep68/'
+		if 'win' in sys.platform:
+			self.s.proxies.update({'http': 'http://127.0.0.1:8888','https': 'https://127.0.0.1:8888',})
+		self.game_api='https://gl-game.tsubasa-dreamteam.com/ep73/'
 		self.language_code=2
 		self.platform_type=0
 		self.auth_count=1
@@ -103,7 +103,7 @@ class API(object):
 			uris.append('t=%s'%(int(time.time())))
 			uris.append('lang=En')
 		finurl=self.game_api+url+'?'+'&'.join(uris)
-		data='[%s,"%s"]'%(data,self.calcDigest('%s %s'%(re.sub('.*ep[0-9]','',finurl),data),key))
+		data='[%s,"%s"]'%(data,self.calcDigest('%s %s'%(re.sub('.*ep[0-9]*','',finurl),data),key))
 		r=self.s.post(finurl,data=data)
 		if r.status_code<>200:
 			self.log('bad status code:%s'%(r.status_code))
