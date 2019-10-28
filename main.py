@@ -157,10 +157,7 @@ class API(object):
 		res= self.callAPI('user/fetchHomeInfo','null')
 		userinfo=res
 		self.userinfo=userinfo
-		if hasattr(self,'pw'):
-			self.db.addAccount(self.user_id,base64.b64encode(self.pw),userinfo[3]['update_info']['user']['coin'],userinfo[3]['update_info']['user_billing_info']['free_stone'])
-		else:
-			self.db.updateAccount(self.user_id,userinfo[3]['update_info']['user']['coin'],userinfo[3]['update_info']['user_billing_info']['free_stone'],self.total_login_days)
+		self.db.addAccount(self.user_id,base64.b64encode(self.pw) if hasattr(self,'pw') else base64.b64encode(self.key),userinfo[3]['update_info']['user']['coin'],userinfo[3]['update_info']['user_billing_info']['free_stone'],self.total_login_days if hasattr(self,'total_login_days') else 1)
 		return res
 		
 	def notification_updateNotificationSetting(self):
@@ -243,7 +240,17 @@ class API(object):
 			presents.append(p['id'])
 		if len(presents)>=1:
 			self.present_receiveMultiple(presents)
-	
+
+	def getAllGacha(self):
+		elements=self.gacha_fetch()[3]['elements']
+		for p in elements:
+			if 'product_info_list' not in p:	continue
+			for q in p['product_info_list']:
+				for t in q:
+					for e in q[t]:
+						if e['cost']<=0:
+							self.gacha_play(e['id'],e['play_count'])
+			
 	def getAllMissions(self):
 		present_list=self.mission_fetch()[3]['mission_list']
 		missions=[]
@@ -285,6 +292,7 @@ class API(object):
 		self.loginBonus_fetchBonus()
 		self.getAllGifts()
 		self.getAllMissions()
+		self.getAllGacha()
 		self.profile_getOne()
 		self.user_fetchHomeInfo()
 

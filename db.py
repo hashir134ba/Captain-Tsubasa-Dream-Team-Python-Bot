@@ -10,14 +10,14 @@ class Database(object):
 	def createDb(self):
 		conn = sqlite3.connect(self.sqlite_file)
 		c = conn.cursor()
-		c.execute('''CREATE TABLE `accounts` (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`password` TEXT,`coin`	INTEGER,`free_stone`	INTEGER);''')
+		c.execute('''CREATE TABLE "accounts" (`id` INTEGER PRIMARY KEY AUTOINCREMENT,`password`	TEXT,`coin` INTEGER,`free_stone` INTEGER,`total_login_days`	INTEGER DEFAULT 1)''')
 		conn.commit()
 		conn.close()
 		
-	def addAccount(self,id,pw,coin,free_stone):
+	def addAccount(self,id,pw,coin,free_stone,total_login_days=1):
 		conn = sqlite3.connect(self.sqlite_file)
 		c = conn.cursor()
-		c.execute("INSERT INTO accounts (id,password,coin,free_stone) VALUES (%s,'%s',%s,%s)"%(id,pw,coin,free_stone))
+		c.execute("INSERT OR REPLACE INTO accounts (id,password,coin,free_stone,total_login_days) VALUES (%s,'%s',%s,%s,%s)"%(id,pw,coin,free_stone,total_login_days))
 		conn.commit()
 		conn.close()
 		
